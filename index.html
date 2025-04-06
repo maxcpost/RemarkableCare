@@ -1553,6 +1553,11 @@
             background: linear-gradient(135deg, var(--secondary), var(--secondary-dark)) !important;
         }
 
+        /* Hide floating call elements completely */
+        .floating-call, .floating-call-text {
+            display: none !important;
+        }
+
         .cta-badge {
             background-color: var(--accent);
             color: var(--text-dark);
@@ -1740,19 +1745,11 @@
                 font-size: 1.05rem;
             }
             
-            .floating-call {
-                width: 3.5rem;
-                height: 3.5rem;
-                bottom: 1.5rem;
-                right: 1.5rem;
-                z-index: 950;
-            }
-            
             .back-to-top {
                 width: 2.5rem;
                 height: 2.5rem;
                 bottom: 1.5rem;
-                right: 1.5rem;
+                right: 2rem;
                 z-index: 900;
             }
             
@@ -2349,12 +2346,6 @@
     <!-- Back to Top Button -->
     <a href="#" class="back-to-top position-fixed bottom-0 end-0 m-4 fs-4 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; opacity: 0.9; z-index: 99; background-color: var(--accent) !important; color: var(--text-dark) !important;">
         <i class="fas fa-arrow-up"></i>
-    </a>
-
-    <!-- Floating Call Button for Mobile -->
-    <a href="tel:+1234567890" class="d-lg-none floating-call position-fixed d-flex align-items-center justify-content-center rounded-circle shadow-lg" style="background-color: var(--primary) !important; color: white !important;">
-        <i class="fas fa-phone-alt"></i>
-        <span class="floating-call-text">Call Us</span>
     </a>
 
     <!-- Bootstrap JS Bundle with Popper -->
