@@ -1388,13 +1388,6 @@
                 flex-direction: column;
                 text-align: center;
             }
-
-            .floating-call {
-                bottom: 1.5rem;
-                right: 1.5rem;
-                width: 3.5rem;
-                height: 3.5rem;
-            }
             
             .detailed-services {
                 padding: 2rem;
@@ -1410,6 +1403,22 @@
             
             .services, .about, .testimonials, .contact {
                 padding: 5rem 1.5rem;
+            }
+            
+            /* Fix for approach section images */
+            .card img.h-100 {
+                max-height: 250px;
+                width: 100%;
+            }
+            
+            /* Force column layout on cards with images */
+            #approach .card .row.g-0 {
+                flex-direction: column;
+            }
+            
+            #approach .card .col-lg-6,
+            #approach .card .col-sm-6 {
+                width: 100%;
             }
         }
         
@@ -1551,6 +1560,11 @@
 
         .bg-gradient-secondary {
             background: linear-gradient(135deg, var(--secondary), var(--secondary-dark)) !important;
+        }
+
+        /* Hide floating call elements completely */
+        .floating-call, .floating-call-text {
+            display: none !important;
         }
 
         .cta-badge {
@@ -1740,19 +1754,11 @@
                 font-size: 1.05rem;
             }
             
-            .floating-call {
-                width: 3.5rem;
-                height: 3.5rem;
-                bottom: 1.5rem;
-                right: 1.5rem;
-                z-index: 950;
-            }
-            
             .back-to-top {
                 width: 2.5rem;
                 height: 2.5rem;
                 bottom: 1.5rem;
-                right: 1.5rem;
+                right: 2rem;
                 z-index: 900;
             }
             
@@ -1792,6 +1798,20 @@
             
             .lead {
                 font-size: 1rem !important;
+            }
+            
+            /* Fix for oversized images on mobile */
+            .card img.h-100 {
+                max-height: 200px !important;
+                object-position: center;
+            }
+            
+            .card .row {
+                flex-direction: column !important;
+            }
+            
+            .card .col-lg-6 {
+                width: 100% !important;
             }
         }
 
@@ -1849,6 +1869,83 @@
             background: var(--accent-dark);
             opacity: 0.9;
             transform: translateY(-3px);
+        }
+
+        /* Approach Section Image Enhancement */
+        .approach-img-container {
+            height: 280px;
+            overflow: hidden;
+            border-radius: 8px;
+            position: relative;
+            margin-bottom: 0;
+        }
+
+        .approach-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.5s ease;
+        }
+
+        .approach-img-container:hover .approach-img {
+            transform: scale(1.05);
+        }
+
+        /* Media queries for responsive approach */
+        @media (max-width: 991px) {
+            .approach-card {
+                height: auto !important;
+            }
+            
+            .approach-img-container {
+                height: 250px;
+            }
+            
+            #approach .card .row {
+                flex-direction: column !important;
+            }
+            
+            #approach .card .col-lg-6 {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            
+            /* Correct border radius on mobile */
+            #approach .approach-img {
+                border-radius: 8px 8px 0 0 !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .approach-img-container {
+                height: 220px;
+            }
+            
+            /* Improve spacing on mobile */
+            #approach .card {
+                margin-bottom: 1.5rem;
+            }
+            
+            #approach .card-body {
+                padding: 1.5rem !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .approach-img-container {
+                height: 180px;
+            }
+            
+            #approach .card-body {
+                padding: 1.25rem !important;
+            }
+            
+            /* Further adjust image properties on small screens */
+            #approach .approach-img {
+                height: 100%;
+                object-position: center top;
+            }
         }
     </style>
 </head>
@@ -2070,10 +2167,14 @@
                 
                 <div class="row align-items-center g-4 g-md-5">
                     <div class="col-md-6" data-aos="fade-right">
-                        <div class="card border-0 shadow-sm h-100">
+                        <div class="card border-0 shadow-sm h-100 approach-card">
                             <div class="row g-0 flex-column flex-sm-row">
                                 <div class="col-sm-6 col-md-12 col-lg-6">
-                                    <img src="media/you-can-tell-she-cares-deeply-about-her-patients-2024-06-11-04-35-23-utc.jpg" class="img-fluid rounded-start-sm rounded-top rounded-sm-start h-100" alt="Caregiver with elderly patient" style="object-fit: cover;">
+                                    <div class="approach-img-container">
+                                        <img src="media/you-can-tell-she-cares-deeply-about-her-patients-2024-06-11-04-35-23-utc.jpg" 
+                                             class="approach-img rounded-start-sm rounded-top rounded-sm-start"
+                                             alt="Caregiver with elderly patient">
+                                    </div>
                                 </div>
                                 <div class="col-sm-6 col-md-12 col-lg-6">
                                     <div class="card-body p-4 p-sm-3">
@@ -2091,10 +2192,14 @@
                     </div>
                     
                     <div class="col-md-6" data-aos="fade-left">
-                        <div class="card border-0 shadow-sm h-100">
+                        <div class="card border-0 shadow-sm h-100 approach-card">
                             <div class="row g-0 flex-column flex-sm-row">
                                 <div class="col-sm-6 col-md-12 col-lg-6 order-sm-2 order-md-1 order-lg-2">
-                                    <img src="media/professional-caregiver-taking-care-of-elderly-woma-2025-01-09-02-50-46-utc.jpg" class="img-fluid rounded-start-sm rounded-top rounded-sm-end h-100" alt="Professional caregiver with elderly woman" style="object-fit: cover;">
+                                    <div class="approach-img-container">
+                                        <img src="media/professional-caregiver-taking-care-of-elderly-woma-2025-01-09-02-50-46-utc.jpg" 
+                                             class="approach-img rounded-start-sm rounded-top rounded-sm-end"
+                                             alt="Professional caregiver with elderly woman">
+                                    </div>
                                 </div>
                                 <div class="col-sm-6 col-md-12 col-lg-6 order-sm-1 order-md-2 order-lg-1">
                                     <div class="card-body p-4 p-sm-3">
@@ -2112,10 +2217,14 @@
                     </div>
                     
                     <div class="col-md-6 mt-4" data-aos="fade-right" data-aos-delay="100">
-                        <div class="card border-0 shadow-sm">
+                        <div class="card border-0 shadow-sm approach-card">
                             <div class="row g-0">
                                 <div class="col-lg-6">
-                                    <img src="media/young-caregiver-assists-her-elderly-woman-patient-2024-12-19-19-59-28-utc.jpg" class="img-fluid rounded-start h-100" alt="Young caregiver assisting elderly woman" style="object-fit: cover;">
+                                    <div class="approach-img-container">
+                                        <img src="media/young-caregiver-assists-her-elderly-woman-patient-2024-12-19-19-59-28-utc.jpg" 
+                                             class="approach-img rounded-start"
+                                             alt="Young caregiver assisting elderly woman">
+                                    </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="card-body p-4">
@@ -2133,10 +2242,14 @@
                     </div>
                     
                     <div class="col-md-6 mt-4" data-aos="fade-left" data-aos-delay="100">
-                        <div class="card border-0 shadow-sm">
+                        <div class="card border-0 shadow-sm approach-card">
                             <div class="row g-0">
                                 <div class="col-lg-6 order-lg-2">
-                                    <img src="media/nurse-doctor-senior-care-caregiver-help-assistence-2025-01-29-08-24-45-utc.jpg" class="img-fluid rounded-end h-100" alt="Caregiver helping senior patient" style="object-fit: cover;">
+                                    <div class="approach-img-container">
+                                        <img src="media/nurse-doctor-senior-care-caregiver-help-assistence-2025-01-29-08-24-45-utc.jpg" 
+                                             class="approach-img rounded-end"
+                                             alt="Caregiver helping senior patient">
+                                    </div>
                                 </div>
                                 <div class="col-lg-6 order-lg-1">
                                     <div class="card-body p-4">
@@ -2349,12 +2462,6 @@
     <!-- Back to Top Button -->
     <a href="#" class="back-to-top position-fixed bottom-0 end-0 m-4 fs-4 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; opacity: 0.9; z-index: 99; background-color: var(--accent) !important; color: var(--text-dark) !important;">
         <i class="fas fa-arrow-up"></i>
-    </a>
-
-    <!-- Floating Call Button for Mobile -->
-    <a href="tel:+1234567890" class="d-lg-none floating-call position-fixed d-flex align-items-center justify-content-center rounded-circle shadow-lg" style="background-color: var(--primary) !important; color: white !important;">
-        <i class="fas fa-phone-alt"></i>
-        <span class="floating-call-text">Call Us</span>
     </a>
 
     <!-- Bootstrap JS Bundle with Popper -->
