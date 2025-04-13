@@ -669,22 +669,77 @@
                     // Add timestamp
                     formDataObj.timestamp = new Date().toISOString();
                     
-                    // Convert to JSON for submission
-                    const jsonData = JSON.stringify(formDataObj);
+                    // Show loading state
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...';
                     
-                    // Replace this URL with your Google Apps Script Web App URL
-                    const scriptURL = 'https://script.google.com/macros/s/AKfycbyp6aUqdKTQDMCqbWXJj7DE-webCr8ZD46IT0MxgdNfHlrvtPX4Wxgp42qnuiP09Q3T/exec';
+                    // URL to Google Apps Script
+                    const scriptURL = 'https://script.google.com/macros/s/AKfycbygRUhcbp_7mGENcKJUwQZ3ifM3oKNzVnzTgbsdGNwQFy_zKJKV4oD6vNyeCR4l0vfB/exec';
                     
-                    // Send data to Google Apps Script
-                    fetch(scriptURL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: jsonData,
-                        mode: 'no-cors'
-                    })
-                    .then(response => {
+                    // Email submission as fallback (direct email)
+                    function fallbackToEmail() {
+                        const subject = "New Contact Form Submission";
+                        const body = `
+Name: ${formDataObj.name}
+Email: ${formDataObj.email}
+Phone: ${formDataObj.phone}
+Service: ${formDataObj.service}
+Message: ${formDataObj.message}
+Timestamp: ${formDataObj.timestamp}
+                        `;
+                        
+                        const mailtoLink = `mailto:RemarkableCare01@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                        
+                        // Show error with fallback option
+                        errorMessage.innerHTML = `
+                            There was a problem submitting your form. Please try again or 
+                            <a href="${mailtoLink}" class="alert-link">click here to send via email</a>.
+                        `;
+                        errorMessage.classList.remove('d-none');
+                        successMessage.classList.add('d-none');
+                    }
+                    
+                    // Create a hidden iframe to handle the form submission without CORS issues
+                    const iframe = document.createElement('iframe');
+                    iframe.name = 'hidden_iframe';
+                    iframe.style.display = 'none';
+                    document.body.appendChild(iframe);
+                    
+                    // Create a form that will post to the Google Apps Script
+                    const hiddenForm = document.createElement('form');
+                    hiddenForm.method = 'POST';
+                    hiddenForm.action = scriptURL;
+                    hiddenForm.target = 'hidden_iframe';
+                    
+                    // Add each field to the form
+                    Object.entries(formDataObj).forEach(([key, value]) => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = key;
+                        input.value = value;
+                        hiddenForm.appendChild(input);
+                    });
+                    
+                    document.body.appendChild(hiddenForm);
+                    
+                    // Track the iframe load event to determine success/failure
+                    let timeoutId;
+                    
+                    // Set a timeout for slow responses
+                    timeoutId = setTimeout(() => {
+                        // If it takes too long, assume there was an issue
+                        iframe.onload = null; // Remove the handler
+                        fallbackToEmail();
+                        cleanup();
+                    }, 10000); // 10 second timeout
+                    
+                    // Handle the response
+                    iframe.onload = function() {
+                        clearTimeout(timeoutId);
+                        
+                        // Assume success when iframe loads without timeout
                         // Show success message
                         form.reset();
                         form.classList.remove('was-validated');
@@ -695,13 +750,35 @@
                         setTimeout(() => {
                             successMessage.classList.add('d-none');
                         }, 5000);
-                    })
-                    .catch(error => {
-                        // Show error message
-                        console.error('Error!', error.message);
-                        errorMessage.classList.remove('d-none');
-                        successMessage.classList.add('d-none');
-                    });
+                        
+                        cleanup();
+                    };
+                    
+                    // Cleanup function to remove temporary elements
+                    function cleanup() {
+                        // Reset button state
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                        
+                        // Remove temporary elements
+                        setTimeout(() => {
+                            try {
+                                document.body.removeChild(hiddenForm);
+                                document.body.removeChild(iframe);
+                            } catch (e) {
+                                console.log('Cleanup error:', e);
+                            }
+                        }, 500);
+                    }
+                    
+                    // Submit the form
+                    try {
+                        hiddenForm.submit();
+                    } catch (e) {
+                        console.error('Submission error:', e);
+                        fallbackToEmail();
+                        cleanup();
+                    }
                 });
             }
         });
